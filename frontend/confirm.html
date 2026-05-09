@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PayCart — Confirm Account</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <div class="auth-page">
+    <div class="form-card">
+
+      <span class="form-logo">PayCart Electronics</span>
+
+      <div style="font-size:48px;text-align:center;margin-bottom:16px">📧</div>
+
+      <h2 style="text-align:center">Check Your Email</h2>
+      <p class="form-desc" style="text-align:center">
+        We sent a 6-digit verification code to
+        <strong id="confirm-email" style="color:#6c63ff"></strong>.
+        Enter it below to activate your account.
+      </p>
+
+      <!-- ERROR MESSAGE -->
+      <div class="error-box" id="confirm-error"></div>
+
+      <!-- CODE INPUT -->
+      <div class="form-group">
+        <label>Verification Code</label>
+        <input
+          type="text"
+          id="code"
+          placeholder="Enter 6-digit code"
+          maxlength="6"
+          required
+          style="font-size:24px;letter-spacing:8px;text-align:center"
+          autocomplete="one-time-code"
+        />
+      </div>
+
+      <!-- SUBMIT -->
+      <button class="btn-primary btn-full" id="confirm-btn" onclick="handleConfirm(event)" style="font-size:15px;padding:14px">
+        Confirm Account →
+      </button>
+
+      <div class="form-footer" style="margin-top:20px">
+        Didn't get the code? Check your spam folder or
+        <a href="register.html">try again</a>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    // Show the email address the code was sent to
+    document.addEventListener("DOMContentLoaded", () => {
+      const email = localStorage.getItem("paycart_pending_email");
+      if (!email) {
+        window.location.href = "register.html";
+        return;
+      }
+      document.getElementById("confirm-email").textContent = email;
+    });
+  </script>
+</body>
+</html>

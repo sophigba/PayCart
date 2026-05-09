@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PayCart — Create Account</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <div class="auth-page">
+    <div class="form-card">
+
+      <span class="form-logo">PayCart Electronics</span>
+
+      <h2>Create Account</h2>
+      <p class="form-desc">Join thousands of shoppers on PayCart</p>
+
+      <!-- ERROR MESSAGE -->
+      <div class="error-box" id="register-error"></div>
+
+      <!-- NAME -->
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="name" placeholder="John Doe" required autocomplete="name"/>
+      </div>
+
+      <!-- EMAIL -->
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="email" placeholder="john@example.com" required autocomplete="email"/>
+      </div>
+
+      <!-- PASSWORD -->
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="Min. 8 characters" required minlength="8"/>
+        <small style="color:#888;font-size:11px;margin-top:4px;display:block">
+          Must be 8+ characters with uppercase, lowercase, and a number
+        </small>
+      </div>
+
+      <!-- CONFIRM PASSWORD -->
+      <div class="form-group">
+        <label>Confirm Password</label>
+        <input type="password" id="confirm-password" placeholder="Repeat your password" required/>
+      </div>
+
+      <!-- SUBMIT -->
+      <button class="btn-primary btn-full" id="register-btn" onclick="handleRegister(event)" style="font-size:15px;padding:14px">
+        Create Account →
+      </button>
+
+      <div class="form-footer" style="margin-top:20px">
+        Already have an account? <a href="login.html">Sign in</a>
+      </div>
+
+      <div class="form-footer" style="margin-top:12px">
+        <a href="index.html" style="color:#888">← Back to Store</a>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    // If already logged in, go to homepage
+    document.addEventListener("DOMContentLoaded", () => {
+      if (isLoggedIn()) window.location.href = "index.html";
+    });
+  </script>
+</body>
+</html>

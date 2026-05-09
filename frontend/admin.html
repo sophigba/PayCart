@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PayCart — Admin Dashboard</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="logo">PayCart <span style="font-size:11px;font-weight:400;color:rgba(255,255,255,0.4);margin-left:6px;-webkit-text-fill-color:rgba(255,255,255,0.4);background:none">Admin Panel</span></div>
+    <ul class="nav-links">
+      <li><span class="nav-user" id="nav-username"></span></li>
+      <li><a href="index.html">View Store →</a></li>
+      <li><a href="#" onclick="logout()" style="color:#ff6584">Logout</a></li>
+    </ul>
+  </nav>
+
+  <!-- ADMIN LAYOUT -->
+  <div class="admin-layout">
+
+    <!-- SIDEBAR -->
+    <div class="admin-sidebar">
+      <div class="sidebar-title">Menu</div>
+
+      <button class="admin-nav-item active" onclick="showSection('products')">
+        📦 Products
+      </button>
+      <button class="admin-nav-item" onclick="showSection('orders')">
+        🧾 Orders
+      </button>
+      <button class="admin-nav-item" onclick="showSection('add-product')">
+        ➕ Add Product
+      </button>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="admin-content">
+
+      <!-- STATS ROW -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-icon">📦</span>
+          <div class="stat-value" id="stat-products">—</div>
+          <div class="stat-label">Total Products</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">🧾</span>
+          <div class="stat-value" id="stat-orders">—</div>
+          <div class="stat-label">Total Orders</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">💰</span>
+          <div class="stat-value" id="stat-revenue">—</div>
+          <div class="stat-label">Total Revenue</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">🛒</span>
+          <div class="stat-value" id="stat-pending">—</div>
+          <div class="stat-label">Pending Orders</div>
+        </div>
+      </div>
+
+      <!-- PRODUCTS SECTION -->
+      <div id="section-products">
+        <div class="table-card">
+          <div class="table-header">
+            <h3>All Products</h3>
+            <button class="btn-primary" onclick="showSection('add-product')" style="padding:8px 18px;font-size:13px">
+              + Add Product
+            </button>
+          </div>
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Product Name</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="products-tbody">
+              <tr><td colspan="5" style="text-align:center;color:#888;padding:32px">Loading products...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ORDERS SECTION (hidden by default) -->
+      <div id="section-orders" style="display:none">
+        <div class="table-card">
+          <div class="table-header">
+            <h3>All Orders</h3>
+          </div>
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>User ID</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody id="orders-tbody">
+              <tr><td colspan="5" style="text-align:center;color:#888;padding:32px">Loading orders...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ADD PRODUCT SECTION (hidden by default) -->
+      <div id="section-add-product" style="display:none">
+        <div class="checkout-card" style="max-width:600px">
+          <h3>➕ Add New Product</h3>
+
+          <div class="error-box" id="add-product-error"></div>
+
+          <div class="form-group">
+            <label>Product Name</label>
+            <input type="text" id="new-name" placeholder="e.g. Samsung Galaxy S24"/>
+          </div>
+          <div class="form-group">
+            <label>Description</label>
+            <textarea id="new-description" rows="3"
+              style="width:100%;padding:12px;border:2px solid #ebebeb;border-radius:8px;font-family:inherit;font-size:14px;outline:none;resize:vertical"
+              placeholder="Brief product description..."></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Price (₦)</label>
+              <input type="number" id="new-price" placeholder="45000" min="0"/>
+            </div>
+            <div class="form-group">
+              <label>Stock Quantity</label>
+              <input type="number" id="new-stock" placeholder="50" min="0"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Image URL</label>
+            <input type="url" id="new-image" placeholder="https://..."/>
+          </div>
+
+          <button class="btn-primary" id="add-product-btn" onclick="handleAddProduct()" style="font-size:14px;padding:12px 28px">
+            Add Product
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    // Show/hide admin sections
+    function showSection(name) {
+      ["products","orders","add-product"].forEach(s => {
+        document.getElementById(`section-${s}`).style.display = s === name ? "block" : "none";
+      });
+      // Update active nav item
+      document.querySelectorAll(".admin-nav-item").forEach((btn, i) => {
+        btn.classList.toggle("active", ["products","orders","add-product"][i] === name);
+      });
+    }
+
+    // Add new product via API
+    async function handleAddProduct() {
+      const name        = document.getElementById("new-name").value.trim();
+      const description = document.getElementById("new-description").value.trim();
+      const price       = document.getElementById("new-price").value;
+      const stock_qty   = document.getElementById("new-stock").value;
+      const image_url   = document.getElementById("new-image").value.trim();
+      const errorEl     = document.getElementById("add-product-error");
+      const btn         = document.getElementById("add-product-btn");
+
+      errorEl.style.display = "none";
+
+      if (!name || !price || !stock_qty) {
+        errorEl.textContent = "Name, price and stock are required.";
+        errorEl.style.display = "block";
+        return;
+      }
+
+      btn.textContent = "Adding...";
+      btn.disabled = true;
+
+      try {
+        await apiCall("/admin/products", {
+          method: "POST",
+          body: JSON.stringify({ name, description, price: parseFloat(price), stock_qty: parseInt(stock_qty), image_url })
+        });
+
+        showToast("Product added successfully!");
+        // Clear form
+        ["new-name","new-description","new-price","new-stock","new-image"].forEach(id => {
+          document.getElementById(id).value = "";
+        });
+        // Reload products and switch to products tab
+        loadAdminProducts();
+        showSection("products");
+
+      } catch (err) {
+        errorEl.textContent = "Could not add product. API not connected yet.";
+        errorEl.style.display = "block";
+      }
+
+      btn.textContent = "Add Product";
+      btn.disabled = false;
+    }
+  </script>
+</body>
+</html>

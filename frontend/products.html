@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PayCart — Product Detail</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="logo">PayCart</div>
+    <div class="nav-search">
+      <span class="search-icon">🔍</span>
+      <input type="text" placeholder="Search electronics..."/>
+    </div>
+    <ul class="nav-links">
+      <li><span class="nav-user" id="nav-username"></span></li>
+      <li><a href="index.html">← Back</a></li>
+      <li><a href="login.html" id="nav-login">Sign In</a></li>
+      <li><a href="#" id="nav-logout" onclick="logout()" style="display:none">Logout</a></li>
+      <li>
+        <a href="cart.html" class="nav-cart">
+          🛒 Cart <span class="cart-badge" id="cart-badge">0</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="container" id="product-detail-container">
+    <div class="product-detail">
+
+      <!-- PRODUCT IMAGE -->
+      <div class="detail-image-box">
+        <img id="product-image" src="https://via.placeholder.com/500x400/f0f0ff/6c63ff?text=Loading..." alt="Product"/>
+      </div>
+
+      <!-- PRODUCT INFO -->
+      <div class="detail-info">
+        <div class="detail-category">Electronics</div>
+        <h1 id="product-name">Loading...</h1>
+
+        <div class="detail-rating">
+          <span class="stars" style="font-size:16px">★★★★★</span>
+          <span style="font-size:13px; color:#888">(128 reviews)</span>
+        </div>
+
+        <div class="detail-price-box">
+          <span class="detail-price" id="product-price"></span>
+          <span class="detail-price-old" id="product-price-old"></span>
+        </div>
+
+        <span class="stock-badge stock-in" id="product-stock">Checking stock...</span>
+
+        <p id="product-description"></p>
+
+        <!-- FEATURES LIST -->
+        <div style="margin-bottom:28px">
+          <div style="display:flex; gap:16px; flex-wrap:wrap;">
+            <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:#555">
+              <span style="color:#6c63ff">🚚</span> Free delivery over ₦50,000
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:#555">
+              <span style="color:#6c63ff">🔄</span> 30-day returns
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:#555">
+              <span style="color:#6c63ff">🛡️</span> 1-year warranty
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-actions">
+          <button class="btn-primary" id="add-to-cart-btn" style="font-size:15px;padding:14px 32px">
+            🛒 Add to Cart
+          </button>
+          <a href="cart.html" class="btn-secondary" style="padding:14px 24px">View Cart</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-bottom" style="border-top:none; padding-top:0">
+      <span>© 2025 <span>PayCart</span>. All rights reserved.</span>
+      <span>Built on <span>AWS</span> · Infra Cloud Unit</span>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

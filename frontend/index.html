@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PayCart — Electronics Store</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="logo">Pay<span style="-webkit-text-fill-color:white;background:none">Cart</span></div>
+
+    <div class="nav-search">
+      <span class="search-icon">🔍</span>
+      <input type="text" placeholder="Search electronics..."/>
+    </div>
+
+    <ul class="nav-links">
+      <li><span class="nav-user" id="nav-username"></span></li>
+      <li><a href="login.html" id="nav-login">Sign In</a></li>
+      <li><a href="#" id="nav-logout" onclick="logout()" style="display:none">Logout</a></li>
+      <li>
+        <a href="cart.html" class="nav-cart">
+          🛒 Cart
+          <span class="cart-badge" id="cart-badge">0</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-tag">⚡ New Arrivals Just Dropped</div>
+      <h1>Next-Level <span class="gradient-text">Electronics</span> At Your Fingertips</h1>
+      <p>Discover the latest gadgets, accessories and tech — delivered straight to you.</p>
+      <div class="hero-actions">
+        <a href="#products" class="btn-primary">Shop Now →</a>
+        <a href="#products" class="btn-secondary">View Deals</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN CONTENT -->
+  <div class="container" id="products">
+
+    <!-- CATEGORY FILTERS -->
+    <div class="categories">
+      <div class="category-pill active"><span class="pill-icon">🔥</span> All Products</div>
+      <div class="category-pill"><span class="pill-icon">📱</span> Phones</div>
+      <div class="category-pill"><span class="pill-icon">💻</span> Laptops</div>
+      <div class="category-pill"><span class="pill-icon">🎧</span> Audio</div>
+      <div class="category-pill"><span class="pill-icon">📷</span> Cameras</div>
+      <div class="category-pill"><span class="pill-icon">⌚</span> Wearables</div>
+      <div class="category-pill"><span class="pill-icon">🎮</span> Gaming</div>
+    </div>
+
+    <!-- SECTION HEADER -->
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Featured <span>Products</span></h2>
+        <p class="section-subtitle">Hand-picked deals just for you</p>
+      </div>
+      <a href="#" class="see-all">View all →</a>
+    </div>
+
+    <!-- PRODUCTS — loaded dynamically by app.js -->
+    <div class="product-grid" id="product-grid"></div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo">PayCart</div>
+        <p>Your one-stop shop for cutting-edge electronics. Built on AWS by Infra Cloud Unit.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Shop</h4>
+        <ul>
+          <li><a href="#">Phones</a></li>
+          <li><a href="#">Laptops</a></li>
+          <li><a href="#">Audio</a></li>
+          <li><a href="#">Gaming</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Shipping</a></li>
+          <li><a href="#">Returns</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Privacy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 <span>PayCart</span>. All rights reserved.</span>
+      <span>Built on <span>AWS</span> · Infra Cloud Unit</span>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

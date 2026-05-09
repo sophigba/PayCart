@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PayCart — Checkout</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="logo">PayCart</div>
+    <ul class="nav-links">
+      <li><a href="cart.html">← Back to Cart</a></li>
+      <li><a href="cart.html" class="nav-cart">🛒 Cart <span class="cart-badge" id="cart-badge">0</span></a></li>
+    </ul>
+  </nav>
+
+  <div class="container">
+    <div class="section-header" style="margin-bottom:28px">
+      <div>
+        <h2 class="section-title">Check<span>out</span></h2>
+        <p class="section-subtitle">Fill in your details to complete your order</p>
+      </div>
+    </div>
+
+    <!-- CHECKOUT LAYOUT -->
+    <div class="checkout-layout">
+
+      <!-- LEFT: FORM -->
+      <div id="checkout-form">
+
+        <!-- CONTACT -->
+        <div class="checkout-card">
+          <h3>📋 Contact Information</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label>First Name</label>
+              <input type="text" id="first-name" placeholder="John" required/>
+            </div>
+            <div class="form-group">
+              <label>Last Name</label>
+              <input type="text" id="last-name" placeholder="Doe" required/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="email" placeholder="john@example.com" required/>
+          </div>
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input type="tel" id="phone" placeholder="+234 800 000 0000" required/>
+          </div>
+        </div>
+
+        <!-- DELIVERY -->
+        <div class="checkout-card">
+          <h3>🚚 Delivery Address</h3>
+          <div class="form-group">
+            <label>Street Address</label>
+            <input type="text" id="address" placeholder="123 Main Street" required/>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>City</label>
+              <input type="text" id="city" placeholder="Lagos" required/>
+            </div>
+            <div class="form-group">
+              <label>State</label>
+              <input type="text" id="state" placeholder="Lagos State" required/>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAYMENT -->
+        <div class="checkout-card">
+          <h3>💳 Payment Method</h3>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <label style="display:flex;align-items:center;gap:12px;padding:16px;border:2px solid #6c63ff;border-radius:10px;cursor:pointer;background:rgba(108,99,255,0.04)">
+              <input type="radio" name="payment" value="delivery" checked style="accent-color:#6c63ff"/>
+              <span style="font-weight:600;font-size:14px">Pay on Delivery</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:12px;padding:16px;border:2px solid #ebebeb;border-radius:10px;cursor:pointer">
+              <input type="radio" name="payment" value="transfer" style="accent-color:#6c63ff"/>
+              <span style="font-weight:600;font-size:14px">Bank Transfer</span>
+            </label>
+          </div>
+        </div>
+
+        <button class="btn-primary btn-full" id="place-order-btn" onclick="placeOrder(event)" style="font-size:16px;padding:16px">
+          Place Order →
+        </button>
+      </div>
+
+      <!-- RIGHT: ORDER SUMMARY -->
+      <div>
+        <div class="order-summary" id="cart-summary">
+          <h3>Order Summary</h3>
+          <div id="checkout-items" style="margin-bottom:20px;border-bottom:1px solid #ebebeb;padding-bottom:16px"></div>
+          <div class="summary-row"><span>Subtotal</span><span id="subtotal">₦0.00</span></div>
+          <div class="summary-row"><span>Shipping</span><span id="shipping">₦2,500.00</span></div>
+          <div class="summary-row"><span>VAT (7.5%)</span><span id="vat">₦0.00</span></div>
+          <div class="summary-row total"><span>Total</span><span id="total">₦0.00</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUCCESS STATE (hidden until order placed) -->
+    <div id="order-success" style="display:none;text-align:center;padding:80px 20px">
+      <div style="font-size:72px;margin-bottom:20px">🎉</div>
+      <h2 style="font-size:32px;font-weight:800;color:#1a1a2e;margin-bottom:12px">Order Placed!</h2>
+      <p style="color:#888;font-size:16px;margin-bottom:32px">Thank you! We'll reach out shortly with your delivery details.</p>
+      <a href="index.html" class="btn-primary" style="font-size:15px;padding:14px 36px">Continue Shopping →</a>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-bottom" style="border-top:none;padding-top:0">
+      <span>© 2025 <span>PayCart</span>. All rights reserved.</span>
+      <span>Built on <span>AWS</span> · Infra Cloud Unit</span>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const cart = getCart();
+      const itemsEl = document.getElementById("checkout-items");
+      if (itemsEl) {
+        itemsEl.innerHTML = cart.map(i => `
+          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px">
+            <span style="color:#555">${i.name} × ${i.quantity}</span>
+            <span style="font-weight:700">${formatPrice(i.price * i.quantity)}</span>
+          </div>`).join("") || "<p style='color:#888;font-size:13px'>No items</p>";
+      }
+      const subtotal = getCartTotal();
+      const shipping = subtotal > 0 ? 2500 : 0;
+      const vat = subtotal * 0.075;
+      document.getElementById("subtotal").textContent = formatPrice(subtotal);
+      document.getElementById("shipping").textContent = formatPrice(shipping);
+      document.getElementById("vat").textContent = formatPrice(vat);
+      document.getElementById("total").textContent = formatPrice(subtotal + shipping + vat);
+    });
+  </script>
+</body>
+</html>

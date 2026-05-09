@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PayCart — Your Cart</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="logo">PayCart</div>
+    <div class="nav-search">
+      <span class="search-icon">🔍</span>
+      <input type="text" placeholder="Search electronics..."/>
+    </div>
+    <ul class="nav-links">
+      <li><span class="nav-user" id="nav-username"></span></li>
+      <li><a href="index.html">Shop</a></li>
+      <li><a href="login.html" id="nav-login">Sign In</a></li>
+      <li><a href="#" id="nav-logout" onclick="logout()" style="display:none">Logout</a></li>
+      <li>
+        <a href="cart.html" class="nav-cart">
+          🛒 Cart <span class="cart-badge" id="cart-badge">0</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="container">
+    <div class="section-header" style="margin-bottom:28px">
+      <div>
+        <h2 class="section-title">Your <span>Cart</span></h2>
+        <p class="section-subtitle">Review your items before checkout</p>
+      </div>
+      <a href="index.html" class="see-all">← Continue Shopping</a>
+    </div>
+
+    <div class="cart-layout">
+      <!-- Cart items — filled by app.js -->
+      <div id="cart-items"></div>
+
+      <!-- Order summary -->
+      <div class="order-summary" id="cart-summary" style="display:none">
+        <h3>Order Summary</h3>
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <span id="subtotal">₦0.00</span>
+        </div>
+        <div class="summary-row">
+          <span>Shipping</span>
+          <span id="shipping">₦2,500.00</span>
+        </div>
+        <div class="summary-row">
+          <span>VAT (7.5%)</span>
+          <span id="vat">₦0.00</span>
+        </div>
+        <div class="summary-row total">
+          <span>Total</span>
+          <span id="total">₦0.00</span>
+        </div>
+
+        <a href="checkout.html" class="btn-primary btn-full" style="margin-top:20px">
+          Proceed to Checkout →
+        </a>
+        <a href="index.html" class="btn-secondary btn-full" style="margin-top:10px">
+          Continue Shopping
+        </a>
+
+        <!-- Trust badges -->
+        <div style="display:flex;justify-content:center;gap:16px;margin-top:20px;padding-top:16px;border-top:1px solid #ebebeb">
+          <span style="font-size:11px;color:#888;text-align:center">🔒<br>Secure</span>
+          <span style="font-size:11px;color:#888;text-align:center">🚚<br>Fast Delivery</span>
+          <span style="font-size:11px;color:#888;text-align:center">🔄<br>Easy Returns</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-bottom" style="border-top:none;padding-top:0">
+      <span>© 2025 <span>PayCart</span>. All rights reserved.</span>
+      <span>Built on <span>AWS</span> · Infra Cloud Unit</span>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+  <script>
+    // Override renderCart to also compute VAT
+    document.addEventListener("DOMContentLoaded", () => {
+      const origRender = renderCart;
+      renderCart();
+      // After rendering, update VAT display
+      const subtotalEl = document.getElementById("subtotal");
+      const vatEl = document.getElementById("vat");
+      const totalEl = document.getElementById("total");
+      if (subtotalEl && vatEl) {
+        const subtotal = getCartTotal();
+        const shipping = subtotal > 0 ? 2500 : 0;
+        const vat = subtotal * 0.075;
+        if (vatEl) vatEl.textContent = formatPrice(vat);
+        if (totalEl) totalEl.textContent = formatPrice(subtotal + shipping + vat);
+      }
+    });
+  </script>
+</body>
+</html>
