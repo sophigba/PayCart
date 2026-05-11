@@ -48,13 +48,27 @@
 
     <!-- CATEGORY FILTERS -->
     <div class="categories">
-      <div class="category-pill active"><span class="pill-icon">🔥</span> All Products</div>
-      <div class="category-pill"><span class="pill-icon">📱</span> Phones</div>
-      <div class="category-pill"><span class="pill-icon">💻</span> Laptops</div>
-      <div class="category-pill"><span class="pill-icon">🎧</span> Audio</div>
-      <div class="category-pill"><span class="pill-icon">📷</span> Cameras</div>
-      <div class="category-pill"><span class="pill-icon">⌚</span> Wearables</div>
-      <div class="category-pill"><span class="pill-icon">🎮</span> Gaming</div>
+      <div class="category-pill active" onclick="filterCategory('all', this)">
+        <span class="pill-icon">🔥</span> All Products
+      </div>
+      <div class="category-pill" onclick="filterCategory('Phones', this)">
+        <span class="pill-icon">📱</span> Phones
+      </div>
+      <div class="category-pill" onclick="filterCategory('Laptops', this)">
+        <span class="pill-icon">💻</span> Laptops
+      </div>
+      <div class="category-pill" onclick="filterCategory('Audio', this)">
+        <span class="pill-icon">🎧</span> Audio
+      </div>
+      <div class="category-pill" onclick="filterCategory('Cameras', this)">
+        <span class="pill-icon">📷</span> Cameras
+      </div>
+      <div class="category-pill" onclick="filterCategory('Wearables', this)">
+        <span class="pill-icon">⌚</span> Wearables
+      </div>
+      <div class="category-pill" onclick="filterCategory('Gaming', this)">
+        <span class="pill-icon">🎮</span> Gaming
+      </div>
     </div>
 
     <!-- SECTION HEADER -->

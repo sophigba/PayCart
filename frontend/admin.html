@@ -24,16 +24,9 @@
     <!-- SIDEBAR -->
     <div class="admin-sidebar">
       <div class="sidebar-title">Menu</div>
-
-      <button class="admin-nav-item active" onclick="showSection('products')">
-        📦 Products
-      </button>
-      <button class="admin-nav-item" onclick="showSection('orders')">
-        🧾 Orders
-      </button>
-      <button class="admin-nav-item" onclick="showSection('add-product')">
-        ➕ Add Product
-      </button>
+      <button class="admin-nav-item active" onclick="showSection('products')">📦 Products</button>
+      <button class="admin-nav-item" onclick="showSection('orders')">🧾 Orders</button>
+      <button class="admin-nav-item" onclick="showSection('add-product')">➕ Add Product</button>
     </div>
 
     <!-- MAIN CONTENT -->
@@ -77,19 +70,20 @@
               <tr>
                 <th>ID</th>
                 <th>Product Name</th>
+                <th>Category</th>
                 <th>Price</th>
                 <th>Stock</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody id="products-tbody">
-              <tr><td colspan="5" style="text-align:center;color:#888;padding:32px">Loading products...</td></tr>
+              <tr><td colspan="6" style="text-align:center;color:#888;padding:32px">Loading products...</td></tr>
             </tbody>
           </table>
         </div>
       </div>
 
-      <!-- ORDERS SECTION (hidden by default) -->
+      <!-- ORDERS SECTION -->
       <div id="section-orders" style="display:none">
         <div class="table-card">
           <div class="table-header">
@@ -99,7 +93,7 @@
             <thead>
               <tr>
                 <th>Order ID</th>
-                <th>User ID</th>
+                <th>User Email</th>
                 <th>Total</th>
                 <th>Status</th>
                 <th>Date</th>
@@ -112,7 +106,7 @@
         </div>
       </div>
 
-      <!-- ADD PRODUCT SECTION (hidden by default) -->
+      <!-- ADD PRODUCT SECTION -->
       <div id="section-add-product" style="display:none">
         <div class="checkout-card" style="max-width:600px">
           <h3>➕ Add New Product</h3>
@@ -123,12 +117,27 @@
             <label>Product Name</label>
             <input type="text" id="new-name" placeholder="e.g. Samsung Galaxy S24"/>
           </div>
+
+          <div class="form-group">
+            <label>Category</label>
+            <select id="new-category" style="width:100%;padding:13px 16px;border:2px solid #ebebeb;border-radius:8px;font-size:14px;outline:none;font-family:inherit">
+              <option value="">Select a category</option>
+              <option value="Phones">📱 Phones</option>
+              <option value="Laptops">💻 Laptops</option>
+              <option value="Audio">🎧 Audio</option>
+              <option value="Cameras">📷 Cameras</option>
+              <option value="Wearables">⌚ Wearables</option>
+              <option value="Gaming">🎮 Gaming</option>
+            </select>
+          </div>
+
           <div class="form-group">
             <label>Description</label>
             <textarea id="new-description" rows="3"
               style="width:100%;padding:12px;border:2px solid #ebebeb;border-radius:8px;font-family:inherit;font-size:14px;outline:none;resize:vertical"
               placeholder="Brief product description..."></textarea>
           </div>
+
           <div class="form-row">
             <div class="form-group">
               <label>Price (₦)</label>
@@ -139,6 +148,7 @@
               <input type="number" id="new-stock" placeholder="50" min="0"/>
             </div>
           </div>
+
           <div class="form-group">
             <label>Image URL</label>
             <input type="url" id="new-image" placeholder="https://..."/>
@@ -154,21 +164,22 @@
   </div>
 
   <script src="app.js"></script>
+
   <script>
-    // Show/hide admin sections
+    // ── SHOW/HIDE SECTIONS ──────────────────
     function showSection(name) {
       ["products","orders","add-product"].forEach(s => {
         document.getElementById(`section-${s}`).style.display = s === name ? "block" : "none";
       });
-      // Update active nav item
       document.querySelectorAll(".admin-nav-item").forEach((btn, i) => {
         btn.classList.toggle("active", ["products","orders","add-product"][i] === name);
       });
     }
 
-    // Add new product via API
+    // ── ADD PRODUCT ─────────────────────────
     async function handleAddProduct() {
       const name        = document.getElementById("new-name").value.trim();
+      const category    = document.getElementById("new-category").value;
       const description = document.getElementById("new-description").value.trim();
       const price       = document.getElementById("new-price").value;
       const stock_qty   = document.getElementById("new-stock").value;
@@ -178,8 +189,8 @@
 
       errorEl.style.display = "none";
 
-      if (!name || !price || !stock_qty) {
-        errorEl.textContent = "Name, price and stock are required.";
+      if (!name || !category || !price || !stock_qty) {
+        errorEl.textContent = "Name, category, price and stock are required.";
         errorEl.style.display = "block";
         return;
       }
@@ -190,26 +201,50 @@
       try {
         await apiCall("/admin/products", {
           method: "POST",
-          body: JSON.stringify({ name, description, price: parseFloat(price), stock_qty: parseInt(stock_qty), image_url })
+          body: JSON.stringify({
+            name, category, description,
+            price: parseFloat(price),
+            stock_qty: parseInt(stock_qty),
+            image_url
+          })
         });
 
         showToast("Product added successfully!");
-        // Clear form
         ["new-name","new-description","new-price","new-stock","new-image"].forEach(id => {
           document.getElementById(id).value = "";
         });
-        // Reload products and switch to products tab
+        document.getElementById("new-category").value = "";
         loadAdminProducts();
         showSection("products");
 
       } catch (err) {
-        errorEl.textContent = "Could not add product. API not connected yet.";
+        errorEl.textContent = "Could not add product. " + err.message;
         errorEl.style.display = "block";
       }
 
       btn.textContent = "Add Product";
       btn.disabled = false;
     }
+
+    // ── ADMIN PROTECTION ────────────────────
+    // Redirects non-admins away from this page
+    document.addEventListener("DOMContentLoaded", async () => {
+      const token = localStorage.getItem("paycart_id_token");
+      if (!token) {
+        window.location.href = "login.html";
+        return;
+      }
+      try {
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        const groups = payload["cognito:groups"] || [];
+        if (!groups.includes("admin")) {
+          window.location.href = "index.html";
+        }
+      } catch(e) {
+        window.location.href = "index.html";
+      }
+    });
   </script>
+
 </body>
 </html>

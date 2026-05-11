@@ -4,23 +4,15 @@
 // ============================================
 
 // ── CONFIGURATION ──────────────────────────
-// Your AWS Cognito credentials
 const COGNITO_USER_POOL_ID = "us-east-1_bg0GauMu3";
 const COGNITO_CLIENT_ID    = "52gt24l0hu788fk5h923mp4m64";
 const COGNITO_REGION       = "us-east-1";
-
-// Your API Gateway URL — swap this when Odinaka sends it
-const API_URL = "https://your-api-gateway-url-here";
-
-// Cognito endpoints built from the above
-const COGNITO_URL = `https://cognito-idp.${COGNITO_REGION}.amazonaws.com/`;
+const API_URL              = "https://a34s4caq37.execute-api.us-east-1.amazonaws.com";
+const COGNITO_URL          = `https://cognito-idp.${COGNITO_REGION}.amazonaws.com/`;
 
 
 // ── TOAST NOTIFICATIONS ────────────────────
-// Shows a small popup message at bottom-right
-
 function showToast(message, type = "success") {
-  // Create toast element if it doesn't exist
   let toast = document.getElementById("toast");
   if (!toast) {
     toast = document.createElement("div");
@@ -28,21 +20,14 @@ function showToast(message, type = "success") {
     toast.className = "toast";
     document.body.appendChild(toast);
   }
-
   toast.textContent = (type === "success" ? "✅ " : "❌ ") + message;
   toast.className = `toast ${type}`;
-
-  // Animate in
   setTimeout(() => toast.classList.add("show"), 10);
-
-  // Animate out after 3 seconds
   setTimeout(() => toast.classList.remove("show"), 3000);
 }
 
 
 // ── CART ───────────────────────────────────
-// Cart is stored in localStorage so it persists across pages
-
 function getCart() {
   return JSON.parse(localStorage.getItem("paycart_cart") || "[]");
 }
@@ -54,13 +39,11 @@ function saveCart(cart) {
 function addToCart(product) {
   const cart = getCart();
   const existing = cart.find(i => i.id === product.id);
-
   if (existing) {
     existing.quantity += 1;
   } else {
     cart.push({ ...product, quantity: 1 });
   }
-
   saveCart(cart);
   updateCartBadge();
   showToast(`${product.name} added to cart!`);
@@ -106,10 +89,6 @@ function formatPrice(amount) {
 
 
 // ── COGNITO AUTH ───────────────────────────
-// We call the Cognito API directly using fetch
-// No SDK needed — lighter and works in plain HTML
-
-// Sign up a new user
 async function cognitoSignUp(name, email, password) {
   const response = await fetch(COGNITO_URL, {
     method: "POST",
@@ -127,16 +106,13 @@ async function cognitoSignUp(name, email, password) {
       ]
     })
   });
-
   if (!response.ok) {
     const err = await response.json();
     throw new Error(err.message || "Sign up failed");
   }
-
   return response.json();
 }
 
-// Confirm sign up with the verification code Cognito emails
 async function cognitoConfirmSignUp(email, code) {
   const response = await fetch(COGNITO_URL, {
     method: "POST",
@@ -150,14 +126,12 @@ async function cognitoConfirmSignUp(email, code) {
       ConfirmationCode: code
     })
   });
-
   if (!response.ok) {
     const err = await response.json();
     throw new Error(err.message || "Confirmation failed");
   }
 }
 
-// Sign in and get JWT tokens
 async function cognitoSignIn(email, password) {
   const response = await fetch(COGNITO_URL, {
     method: "POST",
@@ -174,24 +148,19 @@ async function cognitoSignIn(email, password) {
       }
     })
   });
-
   if (!response.ok) {
     const err = await response.json();
     throw new Error(err.message || "Sign in failed");
   }
-
   const data = await response.json();
-  return data.AuthenticationResult;  // Contains IdToken, AccessToken, RefreshToken
+  return data.AuthenticationResult;
 }
 
-// Store tokens and user info after login
 function saveSession(tokens, email) {
   localStorage.setItem("paycart_id_token",      tokens.IdToken);
   localStorage.setItem("paycart_access_token",  tokens.AccessToken);
   localStorage.setItem("paycart_refresh_token", tokens.RefreshToken);
   localStorage.setItem("paycart_user_email",    email);
-
-  // Decode the JWT to get the user's name (no library needed)
   try {
     const payload = JSON.parse(atob(tokens.IdToken.split(".")[1]));
     localStorage.setItem("paycart_user_name", payload.name || email);
@@ -200,29 +169,24 @@ function saveSession(tokens, email) {
   }
 }
 
-// Get the stored ID token (used to authenticate API calls)
 function getIdToken() {
   return localStorage.getItem("paycart_id_token");
 }
 
-// Check if a user is currently logged in
 function isLoggedIn() {
   return !!getIdToken();
 }
 
-// Clear session on logout
 function logout() {
   ["paycart_id_token","paycart_access_token","paycart_refresh_token",
    "paycart_user_email","paycart_user_name"].forEach(k => localStorage.removeItem(k));
   window.location.href = "login.html";
 }
 
-// Update navbar to show user name or login link
 function updateNavbar() {
   const loginLink  = document.getElementById("nav-login");
   const logoutLink = document.getElementById("nav-logout");
   const userLabel  = document.getElementById("nav-username");
-
   if (isLoggedIn()) {
     const name = localStorage.getItem("paycart_user_name") || "Account";
     if (loginLink)  loginLink.style.display  = "none";
@@ -235,7 +199,7 @@ function updateNavbar() {
   }
 }
 
-// Make an authenticated API call (attaches JWT token in header)
+// Authenticated API call — attaches JWT token
 async function apiCall(path, options = {}) {
   const token = getIdToken();
   const headers = {
@@ -243,20 +207,15 @@ async function apiCall(path, options = {}) {
     ...(token ? { "Authorization": `Bearer ${token}` } : {}),
     ...(options.headers || {})
   };
-
   const response = await fetch(`${API_URL}${path}`, { ...options, headers });
-
   if (!response.ok) throw new Error(`API error: ${response.status}`);
   return response.json();
 }
 
 
-// ── REGISTER FORM HANDLER ──────────────────
-// Called from register.html form submit
-
+// ── REGISTER ───────────────────────────────
 async function handleRegister(event) {
   event.preventDefault();
-
   const name     = document.getElementById("name").value.trim();
   const email    = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
@@ -264,7 +223,6 @@ async function handleRegister(event) {
   const errorEl  = document.getElementById("register-error");
   const btn      = document.getElementById("register-btn");
 
-  // Hide any previous error
   errorEl.style.display = "none";
 
   if (password !== confirm) {
@@ -278,13 +236,8 @@ async function handleRegister(event) {
 
   try {
     await cognitoSignUp(name, email, password);
-
-    // Save email so confirm page knows who to confirm
     localStorage.setItem("paycart_pending_email", email);
-
-    // Go to confirmation page
     window.location.href = "confirm.html";
-
   } catch (err) {
     errorEl.textContent = err.message;
     errorEl.style.display = "block";
@@ -294,12 +247,9 @@ async function handleRegister(event) {
 }
 
 
-// ── CONFIRM FORM HANDLER ───────────────────
-// Called from confirm.html (code verification)
-
+// ── CONFIRM ────────────────────────────────
 async function handleConfirm(event) {
   event.preventDefault();
-
   const email   = localStorage.getItem("paycart_pending_email");
   const code    = document.getElementById("code").value.trim();
   const errorEl = document.getElementById("confirm-error");
@@ -313,7 +263,6 @@ async function handleConfirm(event) {
     await cognitoConfirmSignUp(email, code);
     showToast("Account confirmed! Please sign in.");
     window.location.href = "login.html";
-
   } catch (err) {
     errorEl.textContent = err.message;
     errorEl.style.display = "block";
@@ -323,13 +272,10 @@ async function handleConfirm(event) {
 }
 
 
-// ── LOGIN FORM HANDLER ─────────────────────
-// Called from login.html form submit
-
+// ── LOGIN ───────────────────────────────────
 async function handleLogin(event) {
   event.preventDefault();
-
-  const email   = document.getElementById("email").value.trim();
+  const email    = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
   const errorEl  = document.getElementById("login-error");
   const btn      = document.getElementById("login-btn");
@@ -340,8 +286,13 @@ async function handleLogin(event) {
 
   try {
     const tokens = await cognitoSignIn(email, password);
+
     saveSession(tokens, email);
-    window.location.href = "index.html";  // Redirect to homepage after login
+
+// Check if user is admin and redirect accordingly
+    const payload = JSON.parse(atob(tokens.IdToken.split(".")[1]));
+    const groups = payload["cognito:groups"] || [];
+    window.location.href = groups.includes("admin") ? "admin.html" : "index.html";
 
   } catch (err) {
     errorEl.textContent = err.message.includes("Incorrect") ? "Incorrect email or password." : err.message;
@@ -353,7 +304,6 @@ async function handleLogin(event) {
 
 
 // ── PRODUCTS ───────────────────────────────
-
 async function loadProducts() {
   const grid = document.getElementById("product-grid");
   if (!grid) return;
@@ -377,15 +327,12 @@ async function loadProducts() {
       return;
     }
 
-    // Assign badges for visual variety
     const badges = ["new","sale","hot",null,null];
 
     grid.innerHTML = products.map((p, i) => {
       const badge = badges[i % badges.length];
       const badgeHtml = badge
         ? `<span class="card-badge badge-${badge}">${badge}</span>` : "";
-
-      // Fake "original price" for sale effect (10-20% above actual price)
       const fakeOriginal = badge === "sale"
         ? formatPrice(p.price * 1.15) : "";
 
@@ -401,7 +348,7 @@ async function loadProducts() {
           />
         </div>
         <div class="card-body">
-          <div class="card-category">Electronics</div>
+          <div class="card-category">${p.category || 'Electronics'}</div>
           <div class="card-title">${p.name}</div>
           <div class="card-rating">
             <span class="stars">★★★★★</span>
@@ -424,7 +371,7 @@ async function loadProducts() {
   } catch (err) {
     grid.innerHTML = `
       <div class="error-box" style="grid-column:1/-1; display:block">
-        Could not load products. API not connected yet.<br>
+        Could not load products.<br>
         <small style="opacity:0.7">${err.message}</small>
       </div>`;
   }
@@ -441,7 +388,6 @@ async function loadProductDetail() {
 
   try {
     const p = await apiCall(`/products/${productId}`);
-
     document.getElementById("product-image").src = p.image_url ||
       `https://via.placeholder.com/500x400/f0f0ff/6c63ff?text=${encodeURIComponent(p.name)}`;
     document.getElementById("product-name").textContent = p.name;
@@ -450,7 +396,6 @@ async function loadProductDetail() {
     document.getElementById("product-stock").textContent = p.stock_qty > 0 ? `✓ ${p.stock_qty} in stock` : "Out of stock";
     document.getElementById("product-stock").className = `stock-badge ${p.stock_qty > 0 ? "stock-in" : "stock-out"}`;
     document.getElementById("add-to-cart-btn").onclick = () => addToCart(p);
-
   } catch (err) {
     document.getElementById("product-detail-container").innerHTML =
       `<div class="error-box" style="display:block">Could not load product.</div>`;
@@ -463,10 +408,9 @@ function toggleWishlist(productId) {
 
 
 // ── CART PAGE ──────────────────────────────
-
 function renderCart() {
-  const cartContainer  = document.getElementById("cart-items");
-  const summaryEl      = document.getElementById("cart-summary");
+  const cartContainer = document.getElementById("cart-items");
+  const summaryEl     = document.getElementById("cart-summary");
   if (!cartContainer) return;
 
   const cart = getCart();
@@ -491,7 +435,7 @@ function renderCart() {
           alt="${item.name}" />
       </div>
       <div class="cart-item-details">
-        <div class="item-category">Electronics</div>
+        <div class="item-category">${item.category || 'Electronics'}</div>
         <h4>${item.name}</h4>
         <p style="font-size:13px;color:#888;margin-bottom:10px">${formatPrice(item.price)} each</p>
         <div class="qty-controls">
@@ -518,7 +462,6 @@ function renderCart() {
 
 
 // ── CHECKOUT ───────────────────────────────
-
 async function placeOrder(event) {
   event.preventDefault();
 
@@ -535,10 +478,13 @@ async function placeOrder(event) {
   btn.textContent = "Placing Order...";
   btn.disabled = true;
 
+  const userEmail = localStorage.getItem("paycart_user_email") || null;
+
   try {
     await apiCall("/orders", {
       method: "POST",
       body: JSON.stringify({
+        user_email: userEmail,
         total_amount: getCartTotal(),
         items: cart.map(i => ({
           product_id: i.id,
@@ -550,7 +496,6 @@ async function placeOrder(event) {
 
     localStorage.removeItem("paycart_cart");
     updateCartBadge();
-
     document.getElementById("checkout-form").style.display = "none";
     document.getElementById("order-success").style.display = "block";
 
@@ -562,8 +507,27 @@ async function placeOrder(event) {
 }
 
 
-// ── ADMIN ──────────────────────────────────
+// ── CATEGORY FILTER ────────────────────────
+function filterCategory(category, clicked) {
+  // Update active pill styling
+  document.querySelectorAll(".category-pill").forEach(p => p.classList.remove("active"));
+  clicked.classList.add("active");
 
+  // Get all product cards
+  const cards = document.querySelectorAll(".product-card");
+
+  cards.forEach(card => {
+    if (category === "all") {
+      card.style.display = "block";
+    } else {
+      const cardCategory = card.querySelector(".card-category")?.textContent?.trim();
+      card.style.display = cardCategory === category ? "block" : "none";
+    }
+  });
+}
+
+
+// ── ADMIN ──────────────────────────────────
 async function loadAdminProducts() {
   const tbody = document.getElementById("products-tbody");
   if (!tbody) return;
@@ -576,6 +540,7 @@ async function loadAdminProducts() {
       <tr>
         <td><strong>#${p.id}</strong></td>
         <td>${p.name}</td>
+        <td>${p.category || '—'}</td>
         <td>${formatPrice(p.price)}</td>
         <td>${p.stock_qty}</td>
         <td>
@@ -586,7 +551,7 @@ async function loadAdminProducts() {
         </td>
       </tr>`).join("");
   } catch (e) {
-    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#888">Could not load. API not connected.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#888">Could not load. API not connected.</td></tr>`;
   }
 }
 
@@ -599,12 +564,14 @@ async function loadAdminOrders() {
     document.getElementById("stat-orders").textContent = orders.length;
 
     const revenue = orders.reduce((s, o) => s + parseFloat(o.total_amount || 0), 0);
+    const pending = orders.filter(o => o.status === "pending").length;
     document.getElementById("stat-revenue").textContent = formatPrice(revenue);
+    document.getElementById("stat-pending").textContent = pending;
 
     tbody.innerHTML = orders.map(o => `
       <tr>
         <td><strong>#${o.id}</strong></td>
-        <td>#${o.user_id}</td>
+        <td>${o.user_email || '—'}</td>
         <td>${formatPrice(o.total_amount)}</td>
         <td><span class="status-badge status-${o.status}">${o.status}</span></td>
         <td>${new Date(o.created_at).toLocaleDateString()}</td>
@@ -631,8 +598,6 @@ function editProduct(id) {
 
 
 // ── INIT ───────────────────────────────────
-// Runs when any page loads
-
 document.addEventListener("DOMContentLoaded", () => {
   updateCartBadge();
   updateNavbar();
