@@ -286,7 +286,7 @@ paycart-lambda-sg  → No inbound · All outbound
 
 ### Amazon CloudWatch — Monitoring
 
-<!-- SCREENSHOT: CloudWatch dashboard showing Lambda invocations, API Gateway requests, RDS CPU -->
+![Cloudwatch-dashboard](images/cloudwatch-dashboard.jpg)
 
 ```
 Dashboard      : paycart-dashboard
@@ -330,7 +330,7 @@ KMS encryption:
 | Register | `register.html` | Cognito sign-up |
 | Confirm | `confirm.html` | 6-digit email verification from Cognito |
 | Admin | `admin.html` | Stats, product management, orders — admin group only |
-| Live Demo | [![Demo Video](https://img.shields.io/badge/Watch-Demo-red)]() | Project Walkthrough
+| Live Demo | [![Demo Video](https://img.shields.io/badge/Watch-Demo-red)](https://www.loom.com/share/b4e9e6b708c6457a9b8c00396538b950) | Project Walkthrough
 <!-- SCREENSHOT: Admin dashboard showing 4 stat cards and products table with categories -->
 
 ---
