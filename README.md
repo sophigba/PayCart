@@ -60,6 +60,8 @@ PayCart is a cloud-native electronics e-commerce platform that migrates a startu
 
 ### Amazon S3 — Static Hosting
 
+![S3 Bucket](images/s3-frontend.jpg)
+
 Stores and serves all frontend files.
 
 ```
@@ -75,6 +77,8 @@ Public access  : Read-only via bucket policy
 
 ### Amazon CloudFront — CDN
 
+![Cloudfront](images/cloudfront.jpg)
+
 Delivers the frontend globally over HTTPS.
 
 ```
@@ -89,6 +93,8 @@ Default root   : index.html
 ---
 
 ### Amazon Cognito — Authentication
+
+![Cognito](images/cognito-userpool.jpg)
 
 Handles all user identity — sign-up, sign-in, email verification, and JWT tokens.
 
@@ -141,6 +147,8 @@ const isAdmin = groups.includes("admin");
 
 ### Amazon API Gateway — HTTP API
 
+![API Gateway](images/api-gateway.jpg)
+
 Exposes Lambda as public HTTP endpoints.
 
 ```
@@ -164,6 +172,8 @@ Base URL       : https://a34s4caq37.execute-api.us-east-1.amazonaws.com
 ---
 
 ### AWS Lambda — Serverless Backend
+
+![Lambda-Function](images/lambda-function.jpg)
 
 One Lambda function handles all API routes intelligently.
 
@@ -255,6 +265,8 @@ const { host, username, password } = JSON.parse(secret.SecretString);
 
 ### VPC + Networking
 
+![VPC](images/vpc.jpg)
+
 Custom isolated network protecting all backend resources.
 
 ```
@@ -307,7 +319,6 @@ KMS encryption:
 ## Frontend Pages
 
 <!-- SCREENSHOT: Homepage with 12 products loaded across categories, category pills visible -->
-![Index-page](images/home-page.jpg)    ![Products-lineup](images/home-page-1.jpg)
 
 | Page | File | Description |
 |------|------|-------------|
@@ -319,9 +330,8 @@ KMS encryption:
 | Register | `register.html` | Cognito sign-up |
 | Confirm | `confirm.html` | 6-digit email verification from Cognito |
 | Admin | `admin.html` | Stats, product management, orders — admin group only |
-
+| Live Demo | [![Demo Video](https://img.shields.io/badge/Watch-Demo-red)]() | Project Walkthrough
 <!-- SCREENSHOT: Admin dashboard showing 4 stat cards and products table with categories -->
-![Admin](images/admin-page.jpg)
 
 ---
 
