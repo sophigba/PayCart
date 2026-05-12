@@ -33,7 +33,7 @@ PayCart is a cloud-native electronics e-commerce platform that migrates a startu
 |----------|-----|
 | Live Site | https://d1wi6fa3c7qp61.cloudfront.net |
 | Admin Panel | https://d1wi6fa3c7qp61.cloudfront.net/admin.html |
-| API Base | https://a34s4caq37.execute-api.us-east-1.amazonaws.com |
+| Live Demo | [![Demo Video](https://img.shields.io/badge/Watch-Demo-red)](https://www.loom.com/share/b4e9e6b708c6457a9b8c00396538b950) |
 
 > Products are live and fully connected to the backend database.
 > Register an account to browse, add to cart, and place orders.
@@ -330,7 +330,6 @@ KMS encryption:
 | Register | `register.html` | Cognito sign-up |
 | Confirm | `confirm.html` | 6-digit email verification from Cognito |
 | Admin | `admin.html` | Stats, product management, orders — admin group only |
-| Live Demo | [![Demo Video](https://img.shields.io/badge/Watch-Demo-red)](https://www.loom.com/share/b4e9e6b708c6457a9b8c00396538b950) | Project Walkthrough
 <!-- SCREENSHOT: Admin dashboard showing 4 stat cards and products table with categories -->
 
 ---
