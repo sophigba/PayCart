@@ -136,6 +136,8 @@ const { AuthenticationResult } = await response.json();
 
 The `IdToken` (JWT) is decoded to check the user's Cognito group and attached to every API call:
 
+![Cognito group](images/admin-cognito.jpg)
+
 ```javascript
 // Admin check — decode JWT without any library
 const payload = JSON.parse(atob(token.split(".")[1]));
