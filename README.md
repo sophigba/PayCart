@@ -29,11 +29,7 @@ PayCart is a cloud-native electronics e-commerce platform that migrates a startu
 
 ## Live Demo
 
-| Resource | URL |
-|----------|-----|
-| Live Site | https://d1wi6fa3c7qp61.cloudfront.net |
-| Admin Panel | https://d1wi6fa3c7qp61.cloudfront.net/admin.html |
-| Live Demo | [![Demo Video](https://img.shields.io/badge/Watch-Demo-red)](https://www.loom.com/share/b4e9e6b708c6457a9b8c00396538b950) |
+[![Demo Video](https://img.shields.io/badge/Watch-Demo-red)](https://www.loom.com/share/b4e9e6b708c6457a9b8c00396538b950)
 
 > Products are live and fully connected to the backend database.
 > Register an account to browse, add to cart, and place orders.
